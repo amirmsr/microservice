@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.10-rc-management-alpine
+    ports:
+      # AMQP protocol port
+      - "5672:5672"
+      # HTTP management UI
+      - "15672:15672"
+
+  service1:
+    build: prismaApp2
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "mysql://root:root@host.docker.internal:8889/microservice_user_db"
+    depends_on:
+      - rabbitmq
+
+  service2:
+    build: prismaApp3
+    ports:
+      - "3002:3002"
+    environment:
+      DATABASE_URL: "mysql://root:root@host.docker.internal:8889/microservice_accounts_db"
+    depends_on:
+      - rabbitmq
+
+  service3:
+    build: prismaApp4
+    ports:
+      - "3003:3003"
+    environment:
+      DATABASE_URL: "mysql://root:root@host.docker.internal:8889/microservice_money_transfer_db"
+    depends_on:
+      - rabbitmq
+
